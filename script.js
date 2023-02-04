@@ -75,7 +75,7 @@ function computingUserNames(accounts) {
   });
 }
 
-computingUserName(accounts);
+computingUserNames(accounts);
 
 function displayMovements(movements) {
   containerMovements.innerHTML = "";
