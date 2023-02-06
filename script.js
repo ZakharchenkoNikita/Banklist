@@ -98,3 +98,13 @@ function displayMovements(movements) {
 }
 
 displayMovements(account1.movements);
+
+function calcDisplayBalance(movements) {
+  const balance = movements.reduce(function (accumulator, movement) {
+    return accumulator + movement;
+  }, 0);
+
+  labelBalance.textContent = `${balance}€`;
+}
+
+calcDisplayBalance(account1.movements);
