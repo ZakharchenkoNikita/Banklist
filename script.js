@@ -97,8 +97,6 @@ function displayMovements(movements) {
   });
 }
 
-displayMovements(account1.movements);
-
 function calcDisplayBalance(movements) {
   const balance = movements.reduce(function (accumulator, movement) {
     return accumulator + movement;
@@ -107,10 +105,8 @@ function calcDisplayBalance(movements) {
   labelBalance.textContent = `${balance}€`;
 }
 
-calcDisplayBalance(account1.movements);
-
-function calcDisplaySummary(movements) {
-  const incomes = movements
+function calcDisplaySummary(currentAccount) {
+  const incomes = currentAccount.movements
     .filter(function (movement) {
       return movement > 0;
     })
@@ -120,7 +116,7 @@ function calcDisplaySummary(movements) {
 
   labelSumIn.textContent = `${incomes}€`;
 
-  const out = movements
+  const out = currentAccount.movements
     .filter(function (movement) {
       return movement < 0;
     })
@@ -130,15 +126,15 @@ function calcDisplaySummary(movements) {
 
   labelSumOut.textContent = `${Math.abs(out)}€`;
 
-  const interest = movements
+  const interest = currentAccount.movements
     .filter(function (movement) {
       return movement > 0;
     })
     .map(function (deposit) {
-      return (deposit * 1.2) / 100;
+      return (deposit * currentAccount.interestRate) / 100;
     })
     .filter(function (interest, index, arr) {
-      console.log(arr);
+      // console.log(arr);
       return interest >= 1; // 0.84 was exclude
     })
     .reduce(function (accumulator, movement) {
@@ -148,4 +144,28 @@ function calcDisplaySummary(movements) {
   labelSumInterest.textContent = `${interest}€`;
 }
 
-calcDisplaySummary(account1.movements);
+// Event handler
+let currentAccount;
+
+btnLogin.addEventListener("click", function (event) {
+  event.preventDefault();
+
+  currentAccount = accounts.find(function (account) {
+    return account.username == inputLoginUsername.value;
+  });
+
+  if (currentAccount?.pin == Number(inputLoginPin.value)) {
+    labelWelcome.textContent = `Welcome back, ${
+      currentAccount.owner.split(" ")[0]
+    }`;
+    containerApp.style.opacity = 100;
+
+    // Clear input fields
+    inputLoginUsername.value = inputLoginPin.value = "";
+    inputLoginPin.blur();
+
+    displayMovements(currentAccount.movements);
+    calcDisplayBalance(currentAccount.movements);
+    calcDisplaySummary(currentAccount);
+  }
+});
