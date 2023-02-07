@@ -77,10 +77,12 @@ function computingUserNames(accounts) {
 
 computingUserNames(accounts);
 
-function displayMovements(movements) {
+function displayMovements(movements, sort = false) {
   containerMovements.innerHTML = "";
 
-  movements.forEach(function (movement, index) {
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+
+  movs.forEach(function (movement, index) {
     const type = movement > 0 ? "deposit" : "withdrawal";
 
     const html = `
@@ -206,12 +208,10 @@ btnLoan.addEventListener("click", function (event) {
   event.preventDefault();
 
   const amount = Number(inputLoanAmount.value);
+
   const calcLoanValue = (mov) => mov >= amount * 0.1;
 
-  if (
-    amount > 0 &&
-    currentAccount.movements.some(calcLoanValue)
-  ) {
+  if (amount > 0 && currentAccount.movements.some(calcLoanValue)) {
     currentAccount.movements.push(amount);
 
     updateUI(currentAccount);
@@ -242,3 +242,13 @@ btnClose.addEventListener("click", function (event) {
     containerApp.style.opacity = 0;
   }
 });
+
+let sorted = false;
+
+// Sorting
+btnSort.addEventListener("click", function (event) {
+  event.preventDefault();
+
+  displayMovements(currentAccount.movements, !sorted);
+  sorted = !sorted;
+})
