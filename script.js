@@ -89,7 +89,7 @@ function displayMovements(movements) {
           ${index + 1} 
           ${type}
         </div>
-        <div class="movements__value">${movement}</div>
+        <div class="movements__value">${movement}€</div>
       </div>
     `;
 
@@ -108,3 +108,44 @@ function calcDisplayBalance(movements) {
 }
 
 calcDisplayBalance(account1.movements);
+
+function calcDisplaySummary(movements) {
+  const incomes = movements
+    .filter(function (movement) {
+      return movement > 0;
+    })
+    .reduce(function (accumulator, movement) {
+      return accumulator + movement;
+    });
+
+  labelSumIn.textContent = `${incomes}€`;
+
+  const out = movements
+    .filter(function (movement) {
+      return movement < 0;
+    })
+    .reduce(function (accumulator, movement) {
+      return accumulator + movement;
+    }, 0);
+
+  labelSumOut.textContent = `${Math.abs(out)}€`;
+
+  const interest = movements
+    .filter(function (movement) {
+      return movement > 0;
+    })
+    .map(function (deposit) {
+      return (deposit * 1.2) / 100;
+    })
+    .filter(function (interest, index, arr) {
+      console.log(arr);
+      return interest >= 1; // 0.84 was exclude
+    })
+    .reduce(function (accumulator, movement) {
+      return accumulator + movement;
+    });
+
+  labelSumInterest.textContent = `${interest}€`;
+}
+
+calcDisplaySummary(account1.movements);
