@@ -153,6 +153,7 @@ function updateUI(currentAccount) {
 // Event handler
 let currentAccount;
 
+// Log in
 btnLogin.addEventListener("click", function (event) {
   event.preventDefault();
 
@@ -174,6 +175,7 @@ btnLogin.addEventListener("click", function (event) {
   }
 });
 
+// Transfer amount
 btnTransfer.addEventListener("click", function (event) {
   event.preventDefault();
 
@@ -197,4 +199,27 @@ btnTransfer.addEventListener("click", function (event) {
   // Clear input fields
   inputTransferAmount.value = inputTransferTo.value = "";
   inputTransferAmount.blur();
+});
+
+// Close account
+btnClose.addEventListener("click", function (event) {
+  event.preventDefault();
+
+  if (
+    currentAccount.username == inputCloseUsername.value &&
+    currentAccount.pin == Number(inputClosePin.value)
+  ) {
+    const index = accounts.findIndex(function (account) {
+      return account.username == currentAccount.username;
+    });
+
+    // Clear input fields
+    inputCloseUsername.value = inputClosePin.value = "";
+
+    // Delete account
+    accounts.splice(index, 1);
+
+    // Hide UI
+    containerApp.style.opacity = 0;
+  }
 });
