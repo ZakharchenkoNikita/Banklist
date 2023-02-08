@@ -75,6 +75,13 @@ const inputClosePin = document.querySelector(".form__input--pin");
 
 // Functions
 
+function formatCurrency(value, locale, currency) {
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: currency,
+  }).format(value);
+}
+
 function calcDaysPassed(firstDate, secondDate) {
   return Math.round(Math.abs(secondDate - firstDate) / (1000 * 60 * 60 * 24));
 }
@@ -126,6 +133,12 @@ function displayMovements(account, sort = false) {
     const date = new Date(account.movementsDates[index]);
     const displayDate = formatMovementDate(date, account.locale);
 
+    const formatedMovement = formatCurrency(
+      movement,
+      account.locale,
+      account.currency
+    );
+
     const html = `
       <div class="movements__row">
         <div class="movements__type movements__type--${type}">
@@ -133,7 +146,7 @@ function displayMovements(account, sort = false) {
           ${type}
         </div>
         <div class="movements__date">${displayDate}</div>
-        <div class="movements__value">${movement.toFixed(2)}€</div>
+        <div class="movements__value">${formatedMovement}</div>
       </div>
     `;
 
@@ -146,7 +159,11 @@ function calcDisplayBalance(account) {
     return accumulator + movement;
   }, 0);
 
-  labelBalance.textContent = `${account.balance.toFixed(2)}€`;
+  labelBalance.textContent = formatCurrency(
+    account.balance,
+    account.locale,
+    account.currency
+  );
 }
 
 function calcDisplaySummary(currentAccount) {
@@ -158,7 +175,11 @@ function calcDisplaySummary(currentAccount) {
       return accumulator + movement;
     });
 
-  labelSumIn.textContent = `${incomes.toFixed(2)}€`;
+  labelSumIn.textContent = formatCurrency(
+    incomes,
+    currentAccount.locale,
+    currentAccount.currency
+  );
 
   const out = currentAccount.movements
     .filter(function (movement) {
@@ -168,7 +189,11 @@ function calcDisplaySummary(currentAccount) {
       return accumulator + movement;
     }, 0);
 
-  labelSumOut.textContent = `${Math.abs(out.toFixed(2))}€`;
+  labelSumOut.textContent = formatCurrency(
+    out,
+    currentAccount.locale,
+    currentAccount.currency
+  );
 
   const interest = currentAccount.movements
     .filter(function (movement) {
@@ -185,7 +210,11 @@ function calcDisplaySummary(currentAccount) {
       return accumulator + movement;
     });
 
-  labelSumInterest.textContent = `${interest.toFixed(2)}€`;
+  labelSumInterest.textContent = formatCurrency(
+    interest,
+    currentAccount.locale,
+    currentAccount.currency
+  );
 }
 
 function updateUI(currentAccount) {
