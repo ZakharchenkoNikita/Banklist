@@ -12,13 +12,13 @@ const account1 = {
   pin: 1111,
 
   movementsDates: [
-    "2023-02-08T12:23:34.971Z",
-    "2023-02-08T12:23:34.971Z",
-    "2023-02-08T12:23:34.971Z",
-    "2023-02-08T12:23:34.971Z",
-    "2023-02-08T12:23:34.971Z",
-    "2023-02-08T12:23:34.971Z",
-    "2023-02-08T12:23:34.971Z",
+    "2023-02-01T12:23:34.971Z",
+    "2023-02-02T12:23:34.971Z",
+    "2023-02-03T12:23:34.971Z",
+    "2023-02-04T12:23:34.971Z",
+    "2023-02-05T12:23:34.971Z",
+    "2023-02-06T12:23:34.971Z",
+    "2023-02-07T12:23:34.971Z",
     "2023-02-08T12:23:34.971Z",
   ],
   currency: "EUR",
@@ -32,13 +32,13 @@ const account2 = {
   pin: 2222,
 
   movementsDates: [
-    "2023-02-08T12:23:34.971Z",
-    "2023-02-08T12:23:34.971Z",
-    "2023-02-08T12:23:34.971Z",
-    "2023-02-08T12:23:34.971Z",
-    "2023-02-08T12:23:34.971Z",
-    "2023-02-08T12:23:34.971Z",
-    "2023-02-08T12:23:34.971Z",
+    "2023-02-01T12:23:34.971Z",
+    "2023-02-02T12:23:34.971Z",
+    "2023-02-03T12:23:34.971Z",
+    "2023-02-04T12:23:34.971Z",
+    "2023-02-05T12:23:34.971Z",
+    "2023-02-06T12:23:34.971Z",
+    "2023-02-07T12:23:34.971Z",
     "2023-02-08T12:23:34.971Z",
   ],
   currency: "USD",
@@ -75,6 +75,28 @@ const inputClosePin = document.querySelector(".form__input--pin");
 
 // Functions
 
+function calcDaysPassed(firstDate, secondDate) {
+  return Math.round(Math.abs(secondDate - firstDate) / (1000 * 60 * 60 * 24));
+}
+
+function formatMovementDate(date) {
+  const daysPassed = calcDaysPassed(new Date(), date);
+
+  if (daysPassed == 0) {
+    return "Today";
+  } else if (daysPassed == 1) {
+    return "Yesterday";
+  } else if (daysPassed <= 7) {
+    return `${daysPassed} days`;
+  }
+  
+  const day = `${date.getDay()}`.padStart(2, 0);
+  const month = `${date.getMonth()}`.padStart(2, 0);
+  const year = date.getFullYear();
+
+  return `${day}/${month}/${year}`;
+}
+
 function computingUserNames(accounts) {
   accounts.forEach(function (account) {
     account.username = account.owner
@@ -100,11 +122,7 @@ function displayMovements(account, sort = false) {
     const type = movement > 0 ? "deposit" : "withdrawal";
 
     const date = new Date(account.movementsDates[index]);
-    const day = `${date.getDay()}`.padStart(2, 0);
-    const month = `${date.getMonth()}`.padStart(2, 0);
-    const year = date.getFullYear();
-
-    const displayDate = `${day}/${month}/${year}`;
+    const displayDate = formatMovementDate(date);
 
     const html = `
       <div class="movements__row">
